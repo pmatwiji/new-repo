@@ -7,58 +7,64 @@ module.exports = {
   mode: "development",
   entry: "./src/index.tsx",
   output: {
-    path: path.resolve(__dirname, "dist"),
     publicPath: "http://localhost:3001/",
   },
   devServer: {
     port: 3001,
-    open: true,
-    historyApiFallback: true,
-    hot: true,
     headers: {
       "Access-Control-Allow-Origin": "*",
     },
+    historyApiFallback: true,
     static: {
-      directory: path.join(__dirname, 'public'),
+      directory: path.join(__dirname, 'dist'),
     },
   },
   resolve: {
-    extensions: [".tsx", ".ts", ".js", ".jsx"],
+    extensions: [".tsx", ".ts", ".js"],
   },
   module: {
     rules: [
       {
-        test: /\.(ts|tsx)$/,
+        test: /\.(js|jsx|tsx|ts)$/,
         exclude: /node_modules/,
         use: "ts-loader",
       },
-      {
-        test: /\.(js|jsx)$/,
-        exclude: /node_modules/,
-        use: {
-          loader: "babel-loader",
-          options: {
-            presets: ["@babel/preset-react", "@babel/preset-typescript"],
-          },
-        },
-      },
-      {
-        test: /\.css$/,
-        use: ["style-loader", "css-loader"],
-      }
     ],
   },
   plugins: [
     new ModuleFederationPlugin({
-      name: "remote_app",
+      name: "balanceApp",
       filename: "remoteEntry.js",
       exposes: {
+        "./App": "./src/App",
         "./Balance": "./src/components/Balance",
       },
       shared: {
-        ...deps,
-        react: { singleton: true, requiredVersion: deps.react },
-        "react-dom": { singleton: true, requiredVersion: deps["react-dom"] },
+        react: { 
+          singleton: true, 
+          eager: true,
+          requiredVersion: deps.react 
+        },
+        "react-dom": { 
+          singleton: true, 
+          eager: true,
+          requiredVersion: deps["react-dom"]
+        },
+        "@mui/material": { 
+          singleton: true,
+          eager: true,
+          requiredVersion: deps["@mui/material"]
+        },
+        "@emotion/react": { 
+          singleton: true,
+          eager: true,
+          requiredVersion: deps["@emotion/react"]
+        },
+        "@emotion/styled": { 
+          singleton: true,
+          eager: true,
+          requiredVersion: deps["@emotion/styled"]
+        },
       },
     }),
     new HtmlWebpackPlugin({
