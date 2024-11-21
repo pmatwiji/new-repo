@@ -1,3 +1,4 @@
+const Dotenv = require('dotenv-webpack');
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { ModuleFederationPlugin } = require("webpack").container;
 const path = require("path");
@@ -7,7 +8,11 @@ module.exports = {
   mode: "development",
   entry: "./src/index.tsx",
   output: {
-    publicPath: "http://localhost:3001/",
+    publicPath: process.env.NODE_ENV === 'production' 
+      ? process.env.PRODUCTION_URL 
+      : 'http://localhost:3001/',
+    path: path.resolve(__dirname, "dist"),
+    clean: true,
   },
   devServer: {
     port: 3001,
@@ -32,6 +37,7 @@ module.exports = {
     ],
   },
   plugins: [
+    new Dotenv(),
     new ModuleFederationPlugin({
       name: "balanceApp",
       filename: "remoteEntry.js",

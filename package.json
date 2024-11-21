@@ -22,8 +22,9 @@
   },
   "scripts": {
     "start": "webpack serve",
-    "build": "webpack",
-    "serve": "webpack serve"
+    "build": "cross-env NODE_ENV=production webpack build",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "eslintConfig": {
     "extends": [
@@ -49,6 +50,8 @@
     "@babel/preset-typescript": "^7.26.0",
     "babel-loader": "^9.2.1",
     "css-loader": "^7.1.2",
+    "dotenv-webpack": "^8.1.0",
+    "gh-pages": "^6.2.0",
     "html-webpack-plugin": "^5.6.3",
     "style-loader": "^4.0.0",
     "ts-loader": "^9.5.1",
